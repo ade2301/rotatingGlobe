@@ -5,7 +5,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>E.B. Media — K.E.L.M. 101.9</title>
-    <meta name="description" content="E.B. Media · K.E.L.M. 101.9 Radio — A journey from Chicago/Gary to Los Angeles and London. Interactive globe visualising the global footprint of BRAY Magazine and Digital Streaming." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -286,14 +285,9 @@
         }
 
         /* CSS post-processing on the Three.js canvas:
-           contrast lift + subtle saturation boost for colour grading.
-           image-rendering: auto tells the browser to use bilinear smoothing
-           when the canvas is scaled by devicePixelRatio — this reduces the
-           jagged "pixelated" look on mid-range phones with imperfect GPU AA. */
+           contrast lift + subtle saturation boost for colour grading         */
         .globe canvas {
             filter: contrast(1.12) saturate(1.18) brightness(1.04);
-            image-rendering: auto;
-            -webkit-font-smoothing: antialiased;
         }
         .globe-scene__labels {
             position: absolute;
@@ -497,6 +491,20 @@
                     rgba(209, 170, 78, 0));
         }
 
+        /* ── Full-frame cinematic vignette (draws eye to globe center) ─ */
+        .poster::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 20;
+            background: radial-gradient(ellipse 80% 75% at 50% 46%,
+                transparent 38%,
+                rgba(8, 4, 2, 0.08) 60%,
+                rgba(6, 3, 1, 0.22) 80%,
+                rgba(4, 2, 1, 0.38) 100%);
+        }
+
         /* ── Poster-level contrast / colour grade via CSS filter ─────── */
         .poster {
             filter: contrast(1.06) saturate(1.10);
@@ -671,6 +679,71 @@
             pointer-events: none;
         }
 
+        #press-key-hint {
+            position: fixed;
+            top: 6%;
+            left: -320px;
+            z-index: 10000;
+            opacity: 0;
+            transition: left 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s ease;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: linear-gradient(135deg, #2d8f91 0%, #3ab8bc 60%, #1f7a7c 100%);
+            border-left: 5px solid #dbc46d;
+            border-radius: 0 10px 10px 0;
+            padding: 18px 28px 18px 22px;
+            box-shadow: 4px 4px 24px rgba(0, 0, 0, 0.35), 0 0 18px rgba(45, 143, 145, 0.32);
+            min-width: 300px;
+            max-width: 340px;
+        }
+
+        #press-key-hint.visible {
+            left: 0px;
+            opacity: 1;
+        }
+
+        #press-key-hint .hint-icon {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+            animation: hintPulse 1.4s ease-in-out infinite;
+        }
+
+        #press-key-hint .hint-text {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        #press-key-hint .hint-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            color: #dbc46d;
+            text-transform: uppercase;
+        }
+        #press-key-hint .hint-sub {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 0.82rem;
+            letter-spacing: 0.08em;
+            color: rgba(255,248,220,0.82);
+        }
+
+        @keyframes hintPulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.88);
+            }
+        }
         /* ── Marker tap targets (projected HTML overlays) ────────── */
         .marker-tap {
             position: absolute;
@@ -859,7 +932,14 @@
 
 <body>
     <div id="loader-overlay">
-        <main class="poster" aria-label="E.B. Media — Journey Sphere">
+        <div id="press-key-hint">
+            <div class="hint-icon">⌨️</div>
+            <div class="hint-text">
+                <div class="hint-title">Ready</div>
+                <div class="hint-sub">Press any key to continue</div>
+            </div>
+        </div>
+        <main class="poster" aria-label="Loader composition">
             <div class="full_poster">
                 <div class="poster__top"></div>
                 <div class="poster__band">
@@ -1008,10 +1088,7 @@
         (function () {
 
             // ── Tuning ──────────────────────────────────────────────
-            // Mobile devices render at a lower effective frame budget, so a slower
-            // pendulum feels smoother and less jittery on phone screens.
-            const _isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-            const PENDULUM_SPEED = _isMobile ? 0.006 : 0.009;  // base angular speed
+            const PENDULUM_SPEED = 0.009;   // base angular speed
             const PENDULUM_SWING = 1.8;     // how far it swings each direction (radians)
             const TILT = 0.16;    // axial tilt
 
@@ -1066,12 +1143,8 @@
                 let { w, h } = getSize();
 
                 // ── Renderer ─────────────────────────────────────────
-                // powerPreference: high-performance requests the discrete GPU on dual-GPU devices
-                const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
-                // Cap pixel ratio: high DPR on mobile (3×) is expensive and slows animation —
-                // 2× is visually identical but roughly 2× faster to render each frame.
-                const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 2 : 2.5));
+                const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.5));
                 renderer.setSize(w, h);
                 renderer.physicallyCorrectLights = true;
                 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -1123,11 +1196,7 @@
 
                 const texture = new THREE.CanvasTexture(offC);
                 texture.wrapS = THREE.RepeatWrapping;
-                // Higher anisotropy = sharper texture when the globe surface
-                // is viewed at a steep angle (edges of the sphere). Capped at 8
-                // — most mobile GPUs support 8, and it's a meaningful upgrade
-                // over 4 without hurting performance on desktop.
-                texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+                texture.anisotropy = 4;
 
                 // Slot definitions
                 const SLOTS = [
@@ -1491,13 +1560,8 @@
                     loc._pos = pos;
                 });
 
-                // ── Glowing golden great-circle arcs between locations ──
-                // Two-layer approach: a narrow bright core + a wider soft halo
-                // gives the arc a cinematic "neon tube" quality without being
-                // garish — the additive blend keeps it luminous on dark areas
-                // and naturally transparent over lighter image regions.
+                // ── Glowing arcs between locations ─────────────────────
                 function buildArc(p1, p2) {
-                    const group = new THREE.Group();
                     const mid = p1.clone().add(p2).multiplyScalar(0.5);
                     const dist = p1.distanceTo(p2);
                     mid.normalize().multiplyScalar(1 + dist * 0.55);
@@ -1506,34 +1570,12 @@
                         mid,
                         p2.clone().multiplyScalar(1.002),
                     ]);
-
-                    // Core: bright, saturated gold — the luminous spine of the arc
-                    const coreMat = new THREE.MeshBasicMaterial({
-                        color: 0xffe9a0,          // bright warm gold
-                        transparent: true,
-                        opacity: 0.92,
-                        blending: THREE.AdditiveBlending,
-                        depthWrite: false,
+                    const tubeGeo = new THREE.TubeGeometry(curve, 48, 0.0045, 8, false);
+                    const tubeMat = new THREE.MeshBasicMaterial({
+                        color: 0xdbc46d, transparent: true, opacity: 0.85,
+                        blending: THREE.AdditiveBlending, depthWrite: false,
                     });
-                    group.add(new THREE.Mesh(
-                        new THREE.TubeGeometry(curve, 64, 0.0032, 8, false),
-                        coreMat
-                    ));
-
-                    // Halo: wider, softer, deep gold — creates the glow bloom
-                    const haloMat = new THREE.MeshBasicMaterial({
-                        color: 0xcfb55f,          // deep gold, matches --gold-deep
-                        transparent: true,
-                        opacity: 0.32,
-                        blending: THREE.AdditiveBlending,
-                        depthWrite: false,
-                    });
-                    group.add(new THREE.Mesh(
-                        new THREE.TubeGeometry(curve, 64, 0.0110, 6, false),
-                        haloMat
-                    ));
-
-                    return group;
+                    return new THREE.Mesh(tubeGeo, tubeMat);
                 }
 
                 const arcGroup = new THREE.Group();
@@ -1826,11 +1868,6 @@
                     pillarGroup.rotation.y = globe.rotation.y;
 
                     tiltGroup.rotation.x  = Math.sin(time * 0.4) * 0.04;
-
-                    // Gentle vertical float — a slow sine at a prime-ratio frequency
-                    // so it never locks in phase with the pendulum. Amplitude is ~2.5%
-                    // of the globe radius in world units: perceptible but weightless.
-                    tiltGroup.position.y = Math.sin(time * 0.27) * 0.045;
 
                     sparkMat.opacity = 0.75 + 0.25 * Math.sin(sparkT);
 
