@@ -12,15 +12,13 @@
         rel="stylesheet" />
     <style>
         :root {
-            --cream-top: #fdfaf2;
-            --cream-bottom: #f8f2e4;
+            --cream-top: #fbf8ef;
+            --cream-bottom: #f7f1e3;
             --gold-light: #dbc46d;
             --gold-mid: #d9c06e;
             --gold-deep: #cfb55f;
-            --teal: #2d8f91;        /* true brand teal — brighter, not hunter green */
-            --teal-dark: #1f6e70;   /* darker teal, not olive/hunter */
-            --teal-mid:  #3aa0a2;   /* mid teal for gradients */
-            --ivory: #fdfaf2;       /* pure ivory */
+            --teal: #2d7f80;
+            --teal-dark: #1e6565;
             --text: #231f1a;
         }
 
@@ -54,7 +52,7 @@
             min-height: 0;
             overflow: hidden;
             background:
-                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.92), transparent 55%),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.90), transparent 55%),
                 linear-gradient(180deg, var(--cream-top) 0%, var(--cream-bottom) 100%);
         }
 
@@ -79,22 +77,22 @@
             height: 32%;
             background:
                 linear-gradient(180deg,
-                    rgba(15, 100, 105, 0.68) 0%,
-                    rgba(25, 120, 125, 0.38) 12%,
-                    rgba(35, 138, 142, 0.12) 30%,
-                    rgba(35, 138, 142, 0.00) 50%,
-                    rgba(35, 138, 142, 0.12) 70%,
-                    rgba(25, 120, 125, 0.36) 88%,
-                    rgba(15, 100, 105, 0.66) 100%),
+                    rgba(20, 88, 82, 0.72) 0%,
+                    rgba(28, 100, 95, 0.42) 12%,
+                    rgba(35, 110, 105, 0.14) 30%,
+                    rgba(35, 110, 105, 0.00) 50%,
+                    rgba(35, 110, 105, 0.14) 70%,
+                    rgba(28, 100, 95, 0.40) 88%,
+                    rgba(20, 88, 82, 0.70) 100%),
                 linear-gradient(180deg,
                     var(--gold-light) 0%,
                     var(--gold-mid) 45%,
                     var(--gold-deep) 100%);
             box-shadow:
-                inset 0 3px 0 rgba(255, 255, 255, 0.28),
-                inset 0 -3px 0 rgba(255, 255, 255, 0.18),
-                inset 0 28px 40px rgba(12, 90, 92, 0.20),
-                inset 0 -28px 40px rgba(12, 90, 92, 0.18);
+                inset 0 3px 0 rgba(255, 255, 255, 0.24),
+                inset 0 -3px 0 rgba(255, 255, 255, 0.16),
+                inset 0 28px 40px rgba(18, 80, 75, 0.22),
+                inset 0 -28px 40px rgba(18, 80, 75, 0.20);
         }
 
         /* Teal border lines */
@@ -104,11 +102,11 @@
             position: absolute;
             left: 0; right: 0;
             height: 5px;
-            background: linear-gradient(180deg, #5bbfc2 0%, var(--teal) 55%, #1f7a7c 100%);
+            background: linear-gradient(180deg, #48a0a2 0%, var(--teal) 55%, #256870 100%);
             box-shadow:
-                0 0 0 1px rgba(255, 255, 255, 0.22),
-                0 0 14px rgba(45, 143, 145, 0.35),
-                0 0 32px rgba(45, 143, 145, 0.14);
+                0 0 0 1px rgba(255, 255, 255, 0.18),
+                0 0 12px rgba(45, 127, 128, 0.25),
+                0 0 28px rgba(45, 127, 128, 0.10);
         }
         .poster__band::before { top: 0; }
         .poster__band::after  { bottom: 0; }
@@ -166,11 +164,8 @@
             position: absolute;
             inset: -14%;
             border-radius: 50%;
-            background: radial-gradient(circle,
-                rgba(45, 143, 145, 0.18) 0%,
-                rgba(219, 196, 109, 0.16) 40%,
-                transparent 68%);
-            filter: blur(30px);
+            background: radial-gradient(circle, rgba(255, 232, 150, 0.24), transparent 65%);
+            filter: blur(28px);
             animation: glowPulse 5s ease-in-out infinite;
             pointer-events: none;
         }
@@ -231,14 +226,13 @@
             inset: 0;
             border-radius: 50%;
             overflow: hidden;
-            background: #06161e;
+            background: #0e2a30;
             box-shadow:
-                0 44px 72px rgba(10, 6, 2, 0.52),
-                0 16px 32px rgba(10, 6, 2, 0.28),
-                0 0 0 7px rgba(253, 250, 242, 0.82),
-                0 0 0 16px rgba(219, 196, 109, 0.20),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.70),
-                inset -22px -30px 64px rgba(4, 4, 4, 0.38);
+                0 36px 48px rgba(30, 20, 10, 0.26),
+                0 0 0 7px rgba(255, 250, 238, 0.72),
+                0 0 0 16px rgba(220, 205, 175, 0.20),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.6),
+                inset -18px -24px 52px rgba(10, 10, 10, 0.18);
         }
 
         /* Ring highlight overlay (sits above the canvas) */
@@ -247,48 +241,14 @@
             inset: 0;
             border-radius: 50%;
             box-shadow:
-                inset 0 0 0 7px rgba(253, 250, 242, 0.92),  /* ivory */
-                inset -6px -10px 28px rgba(130, 110, 80, 0.20),
-                inset 8px 8px 28px rgba(255, 255, 255, 0.55);
+                inset 0 0 0 7px rgba(250, 245, 232, 0.85),
+                inset -5px -8px 22px rgba(150, 130, 100, 0.14),
+                inset 7px 7px 20px rgba(255, 255, 255, 0.40);
             pointer-events: none;
             z-index: 10;
         }
 
-        /* Cinematic vignette overlay on the globe canvas */
-        .globe__vignette {
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            background: radial-gradient(circle at 50% 50%,
-                transparent 30%,
-                rgba(4, 14, 20, 0.12) 52%,
-                rgba(4, 12, 18, 0.38) 72%,
-                rgba(3, 9, 14, 0.68) 88%,
-                rgba(2, 6, 10, 0.85) 100%);
-            pointer-events: none;
-            z-index: 9;
-        }
-
-        /* Cinematic specular highlight — simulates glossy surface reflection
-           from key light upper-left, soft and premium not harsh             */
-        .globe__specular {
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            background: radial-gradient(ellipse 55% 45% at 32% 28%,
-                rgba(255, 252, 240, 0.22) 0%,
-                rgba(255, 248, 225, 0.10) 35%,
-                transparent 65%);
-            pointer-events: none;
-            z-index: 10;
-            mix-blend-mode: screen;
-        }
-
-        /* CSS post-processing on the Three.js canvas:
-           contrast lift + subtle saturation boost for colour grading         */
-        .globe canvas {
-            filter: contrast(1.12) saturate(1.18) brightness(1.04);
-        }
+        /* ── SVG label overlay ───────────────────────────────────── */
         .globe-scene__labels {
             position: absolute;
             inset: 0;
@@ -383,7 +343,7 @@
         .brand-copy__eyebrow {
             font-family: "Great Vibes", "Cormorant Garamond", Georgia, serif;
             font-size: clamp(1.8rem, 6vw, 3.1rem);
-            color: #1f8082;   /* true teal, not hunter green */
+            color: #1a736d;
             font-weight: 400;
             margin-bottom: 2px;
         }
@@ -395,7 +355,7 @@
             line-height: 0.9;
             letter-spacing: -0.01em;
             font-weight: 700;
-            color: #1f7476;  /* true teal, not hunter */
+            color: #2e5a5b;
         }
 
         .brand-copy__text p {
@@ -491,24 +451,7 @@
                     rgba(209, 170, 78, 0));
         }
 
-        /* ── Full-frame cinematic vignette (draws eye to globe center) ─ */
-        .poster::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 20;
-            background: radial-gradient(ellipse 80% 75% at 50% 46%,
-                transparent 38%,
-                rgba(8, 4, 2, 0.08) 60%,
-                rgba(6, 3, 1, 0.22) 80%,
-                rgba(4, 2, 1, 0.38) 100%);
-        }
-
-        /* ── Poster-level contrast / colour grade via CSS filter ─────── */
-        .poster {
-            filter: contrast(1.06) saturate(1.10);
-        }
+        /* ── Responsive fine-tuning ─────────────────────────────── */
         /* Landscape phones: shrink globe so both globe + badge fit */
         @media (max-height: 500px) {
             .globe-scene {
@@ -568,7 +511,7 @@
         .brand-copy__eyebrow .tw-inner {
             font-family: "Great Vibes", "Cormorant Garamond", Georgia, serif;
             font-size: inherit;
-            color: #1f8082;  /* true brand teal */
+            color: #1a736d;
             font-weight: 400;
         }
 
@@ -690,11 +633,11 @@
             display: flex;
             align-items: center;
             gap: 14px;
-            background: linear-gradient(135deg, #2d8f91 0%, #3ab8bc 60%, #1f7a7c 100%);
+            background: linear-gradient(135deg, #1e6565 0%, #2d7f80 60%, #1a5a5a 100%);
             border-left: 5px solid #dbc46d;
             border-radius: 0 10px 10px 0;
             padding: 18px 28px 18px 22px;
-            box-shadow: 4px 4px 24px rgba(0, 0, 0, 0.35), 0 0 18px rgba(45, 143, 145, 0.32);
+            box-shadow: 4px 4px 24px rgba(0, 0, 0, 0.35), 0 0 18px rgba(45, 127, 128, 0.3);
             min-width: 300px;
             max-width: 340px;
         }
@@ -772,10 +715,10 @@
             max-width: 230px;
             padding: 10px 14px;
             border-radius: 10px;
-            background: linear-gradient(180deg, rgba(30, 130, 135, 0.96), rgba(18, 100, 106, 0.96));
+            background: linear-gradient(180deg, rgba(30, 90, 90, 0.92), rgba(20, 70, 70, 0.92));
             border: 1.5px solid var(--gold-light);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.38), 0 0 20px rgba(219,196,109,0.28);
-            color: var(--ivory);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 18px rgba(219,196,109,0.25);
+            color: #fbf8ef;
             font-family: Arial, Helvetica, sans-serif;
             opacity: 0;
             transform: translate(-50%, calc(-100% - 14px)) scale(0.92);
@@ -829,10 +772,10 @@
             width: min(86vw, 360px);
             padding: 28px 24px 24px;
             border-radius: 16px;
-            background: linear-gradient(180deg, rgba(35, 142, 148, 0.97), rgba(22, 110, 116, 0.97));
+            background: linear-gradient(180deg, rgba(30, 90, 90, 0.97), rgba(18, 64, 64, 0.97));
             border: 2px solid var(--gold-light);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.48), 0 0 36px rgba(219,196,109,0.32);
-            color: var(--ivory);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 30px rgba(219,196,109,0.30);
+            color: #fbf8ef;
             font-family: Arial, Helvetica, sans-serif;
             text-align: center;
             transform: translateY(16px) scale(0.96);
@@ -891,7 +834,7 @@
             height: 3px;
             margin: 14px auto 0;
             border-radius: 2px;
-            background: linear-gradient(90deg, var(--teal-mid), var(--gold-light));
+            background: linear-gradient(90deg, var(--teal), var(--gold-light));
         }
 
         .globe-tooltip__title {
@@ -960,8 +903,6 @@
                 <!-- The 3D globe -->
                 <div class="globe" id="globe">
                     <div class="globe__ring"></div>
-                    <div class="globe__specular"></div>
-                    <div class="globe__vignette"></div>
                 </div>
 
                 <!-- Sparks -->
@@ -1144,12 +1085,8 @@
 
                 // ── Renderer ─────────────────────────────────────────
                 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.5));
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
                 renderer.setSize(w, h);
-                renderer.physicallyCorrectLights = true;
-                renderer.toneMapping = THREE.ACESFilmicToneMapping;
-                renderer.toneMappingExposure = 1.22;
-                renderer.outputEncoding = THREE.sRGBEncoding;
                 renderer.domElement.style.cssText =
                     'position:absolute;inset:0;width:100%;height:100%;border-radius:50%;display:block;z-index:1;pointer-events:auto;touch-action:none;';
                 globeEl.insertBefore(renderer.domElement, globeEl.firstChild);
@@ -1181,16 +1118,11 @@
                 offC.width = TW; offC.height = TH;
                 const oc = offC.getContext('2d');
 
-                // Base fill — deep brand teal, not hunter-green-leaning navy.
-                // This is the colour that bleeds through wherever image slots
-                // fade to transparent at their blended edges, so it must
-                // sit firmly in the teal palette.
+                // Base fill
                 const baseFill = oc.createLinearGradient(0, 0, 0, TH);
-                baseFill.addColorStop(0,    '#07232c');  // very dark teal near poles
-                baseFill.addColorStop(0.35, '#0c3b45');  // deep brand teal
-                baseFill.addColorStop(0.5,  '#0f434e');  // richest teal at equator
-                baseFill.addColorStop(0.65, '#0c3b45');
-                baseFill.addColorStop(1,    '#07232c');
+                baseFill.addColorStop(0, '#0d2535');
+                baseFill.addColorStop(0.5, '#1a3a4a');
+                baseFill.addColorStop(1, '#0d2535');
                 oc.fillStyle = baseFill;
                 oc.fillRect(0, 0, TW, TH);
 
@@ -1258,11 +1190,10 @@
                     const tc = tmp.getContext('2d');
                     tc.drawImage(img, ox, oy, ow, oh, 0, 0, sw, TH);
 
-                    // Apply a cosine alpha mask at edges so adjacent images
-                    // dissolve into each other. Wider blend (22%) means the
-                    // base fill colour is exposed for a shorter distance,
-                    // reducing any visible seam colour.
-                    const blendW = sw * 0.22;
+                    // Apply a cosine alpha mask only at the very edges, so
+                    // adjacent images blend without exposing a large gap
+                    // of bare background color between slots.
+                    const blendW = sw * 0.12;
                     const imgData = tc.getImageData(0, 0, sw, TH);
                     const d = imgData.data;
                     for (let py = 0; py < TH; py++) {
@@ -1299,73 +1230,41 @@
                 });
 
                 // ── Globe mesh ────────────────────────────────────────
-                const geo = new THREE.SphereGeometry(1, 96, 96);  // higher poly for smoother silhouette
-                const mat = new THREE.MeshStandardMaterial({
+                const geo = new THREE.SphereGeometry(1, 80, 80);
+                const mat = new THREE.MeshPhongMaterial({
                     map: texture,
-                    roughness: 0.42,        // lower roughness = sharper, more polished specular
-                    metalness: 0.18,        // more metalness for premium specular highlights
-                    envMapIntensity: 1.2,
+                    specular: new THREE.Color(0x334455),
+                    shininess: 16,
                 });
                 const globe = new THREE.Mesh(geo, mat);
                 globe.rotation.y = 0;
                 tiltGroup.add(globe);
 
                 // ── Atmosphere ────────────────────────────────────────
-                // Inner haze — brand teal, thin but visible
                 tiltGroup.add(new THREE.Mesh(
-                    new THREE.SphereGeometry(1.032, 64, 64),
-                    new THREE.MeshStandardMaterial({
-                        color: 0x3ab8bc, transparent: true, opacity: 0.075,
-                        side: THREE.FrontSide, depthWrite: false, roughness: 1, metalness: 0,
+                    new THREE.SphereGeometry(1.038, 48, 48),
+                    new THREE.MeshPhongMaterial({
+                        color: 0x6ab8cc, transparent: true, opacity: 0.07,
+                        side: THREE.FrontSide, depthWrite: false,
                     })
                 ));
 
-                // Outer limb glow shell — warm gold halo, BackSide creates the rim
+                // Outer glow shell
                 tiltGroup.add(new THREE.Mesh(
-                    new THREE.SphereGeometry(1.10, 48, 48),
-                    new THREE.MeshStandardMaterial({
-                        color: 0xffe090, transparent: true, opacity: 0.055,
-                        side: THREE.BackSide, depthWrite: false, roughness: 1, metalness: 0,
+                    new THREE.SphereGeometry(1.08, 32, 32),
+                    new THREE.MeshPhongMaterial({
+                        color: 0xffe8a0, transparent: true, opacity: 0.025,
+                        side: THREE.BackSide, depthWrite: false,
                     })
                 ));
 
                 // ── Lat/lon grid lines ────────────────────────────────
-                // Meridians: glow near poles (|lat| > ~65°), fade at surface to not
-                // obscure image slots. Parallels stay very subtle throughout.
+                const lineMat = new THREE.LineBasicMaterial({
+                    color: 0xffe8a0, transparent: true, opacity: 1,
+                });
                 const lineGroup = new THREE.Group();
                 tiltGroup.add(lineGroup);
 
-                // Helper: build a vertex-coloured line so each point can fade independently
-                function makeGradientLine(pts, alphaFn) {
-                    const geo = new THREE.BufferGeometry().setFromPoints(pts);
-                    const count = pts.length;
-                    const colors = new Float32Array(count * 3);
-                    const alphas = new Float32Array(count);
-                    for (let i = 0; i < count; i++) {
-                        // ivory teal-white tint
-                        colors[i * 3]     = 0.98;
-                        colors[i * 3 + 1] = 0.97;
-                        colors[i * 3 + 2] = 0.94;
-                        alphas[i] = alphaFn(i, count);
-                    }
-                    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-                    // Store alphas for use in material (LineBasicMaterial uses vertex colors)
-                    // We bake alpha into colour brightness instead (no per-vertex alpha in basic)
-                    for (let i = 0; i < count; i++) {
-                        const a = alphas[i];
-                        colors[i * 3]     *= a;
-                        colors[i * 3 + 1] *= a;
-                        colors[i * 3 + 2] *= a;
-                    }
-                    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-                    const mat = new THREE.LineBasicMaterial({
-                        vertexColors: true, transparent: true, opacity: 1,
-                        depthWrite: false,
-                    });
-                    return new THREE.Line(geo, mat);
-                }
-
-                // Parallels — flat subtle ivory, no polar emphasis needed
                 [-60, -30, 0, 30, 60].forEach(latDeg => {
                     const lat = latDeg * Math.PI / 180;
                     const r = Math.cos(lat), y = Math.sin(lat);
@@ -1373,41 +1272,15 @@
                         const a = (i / 64) * Math.PI * 2;
                         return new THREE.Vector3(Math.cos(a) * r, y, Math.sin(a) * r);
                     });
-                    // Subtle uniform opacity — doesn't compete with image slots
-                    lineGroup.add(makeGradientLine(pts, () => 0.13));
+                    lineGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
                 });
-
-                // Meridians — glow (opacity ~0.72) in the 25° caps near each pole,
-                // then smoothly fade to near-invisible (0.06) over the mid-latitude band
-                // so they don't clutter the scenic image slots on the equatorial belt.
                 for (let lon = 0; lon < 360; lon += 30) {
                     const l = lon * Math.PI / 180;
-                    const NPTS = 129;
-                    const pts = Array.from({ length: NPTS }, (_, i) => {
-                        const lat = (i / (NPTS - 1)) * Math.PI * 2 - Math.PI;
+                    const pts = Array.from({ length: 65 }, (_, i) => {
+                        const lat = (i / 64) * Math.PI * 2 - Math.PI;
                         return new THREE.Vector3(Math.cos(lat) * Math.cos(l), Math.sin(lat), Math.cos(lat) * Math.sin(l));
                     });
-                    lineGroup.add(makeGradientLine(pts, (i, count) => {
-                        // lat in radians: maps i=0 → -π, i=count-1 → +π
-                        const lat = (i / (count - 1)) * Math.PI * 2 - Math.PI;
-                        const absLat = Math.abs(lat);
-                        // Pole cap: |lat| > 65° → bright glow
-                        const POLE_START = 65 * Math.PI / 180;   // start of glow region
-                        const POLE_END   = 90 * Math.PI / 180;   // true pole = max glow
-                        const MID_FADE   = 30 * Math.PI / 180;   // mid-latitude = minimum
-                        if (absLat >= POLE_START) {
-                            // Ramp from 0.22 at POLE_START up to 0.72 at pole
-                            const t = (absLat - POLE_START) / (POLE_END - POLE_START);
-                            return 0.22 + t * 0.50;
-                        } else if (absLat >= MID_FADE) {
-                            // Fade down from 0.22 at POLE_START to 0.06 at MID_FADE
-                            const t = (absLat - MID_FADE) / (POLE_START - MID_FADE);
-                            return 0.06 + t * 0.16;
-                        } else {
-                            // Equatorial band — very faint so images show clearly
-                            return 0.06;
-                        }
-                    }));
+                    lineGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
                 }
 
                 // ── Location markers (golden glowing mic pins) ─────────
@@ -1444,7 +1317,7 @@
                         id: 'london',
                         name: 'London, UK',
                         role: 'International Talent & Q Collaboration',
-                        info: 'Featuring collaborator, Stuart Epps.',
+                        info: 'Featuring collaborator Stuart Epps.',
                         xDeg: 65, yDeg: 22,
                     },
                 ];
@@ -1458,51 +1331,37 @@
                 haloCanvas.width = haloCanvas.height = 128;
                 const hctx = haloCanvas.getContext('2d');
                 const hgrad = hctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-                hgrad.addColorStop(0,    'rgba(255, 235, 140, 1)');
-                hgrad.addColorStop(0.18, 'rgba(255, 210, 80, 0.95)');
-                hgrad.addColorStop(0.40, 'rgba(219, 170, 50, 0.60)');
-                hgrad.addColorStop(0.68, 'rgba(180, 130, 20, 0.18)');
-                hgrad.addColorStop(1,    'rgba(140, 90, 0, 0)');
+                hgrad.addColorStop(0, 'rgba(255,250,225,1)');
+                hgrad.addColorStop(0.30, 'rgba(255,224,140,0.85)');
+                hgrad.addColorStop(0.6, 'rgba(219,196,109,0.40)');
+                hgrad.addColorStop(1, 'rgba(45,127,128,0)');
                 hctx.fillStyle = hgrad;
                 hctx.fillRect(0, 0, 128, 128);
                 const haloTexture = new THREE.CanvasTexture(haloCanvas);
 
-                // Build a microphone marker: warm gold emissive head + body + grille rings.
-                // Slightly larger so the shape reads clearly on the globe surface.
+                // Build a small "microphone" group: gold head (sphere) +
+                // gold body (capsule-ish cylinder), emissive/glowing look.
                 function buildMicMarker() {
                     const group = new THREE.Group();
 
-                    // Emissive gold — glows warmly like a lit stage mic
-                    const goldMat = new THREE.MeshStandardMaterial({
-                        color: 0xffe090,
-                        emissive: 0xffb930,
-                        emissiveIntensity: 1.4,
-                        roughness: 0.28,
-                        metalness: 0.72,
-                    });
+                    const goldMat = new THREE.MeshBasicMaterial({ color: 0xffe9a8 });
 
-                    // Mic head (sphere) — larger so it's clearly visible
-                    const head = new THREE.Mesh(new THREE.SphereGeometry(0.034, 18, 18), goldMat);
-                    head.position.y = 0.030;
+                    // Mic head (sphere)
+                    const head = new THREE.Mesh(new THREE.SphereGeometry(0.026, 16, 16), goldMat);
+                    head.position.y = 0.022;
                     group.add(head);
 
-                    // Mic body (cylinder beneath head)
-                    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.017, 0.020, 0.044, 14), goldMat);
+                    // Mic body (small cylinder beneath head)
+                    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.016, 0.034, 12), goldMat);
                     body.position.y = -0.008;
                     group.add(body);
 
-                    // Grille rings — slightly darker warm gold
-                    const ringMat = new THREE.MeshStandardMaterial({
-                        color: 0xdba830,
-                        emissive: 0xc07010,
-                        emissiveIntensity: 0.9,
-                        roughness: 0.35,
-                        metalness: 0.6,
-                    });
-                    for (let ri = -1; ri <= 1; ri++) {
-                        const torus = new THREE.Mesh(new THREE.TorusGeometry(0.034, 0.0035, 8, 22), ringMat);
+                    // Mic grille rings (slightly darker gold, thin torus)
+                    const ringMat = new THREE.MeshBasicMaterial({ color: 0xdbc46d });
+                    for (let i = -1; i <= 1; i++) {
+                        const torus = new THREE.Mesh(new THREE.TorusGeometry(0.0265, 0.0028, 8, 20), ringMat);
                         torus.rotation.x = Math.PI / 2;
-                        torus.position.y = 0.030 + ri * 0.014;
+                        torus.position.y = 0.022 + i * 0.012;
                         group.add(torus);
                     }
 
@@ -1543,7 +1402,7 @@
                     // Outer ring (teal) for hover-highlight feedback
                     const ringGeo = new THREE.RingGeometry(0.034, 0.042, 24);
                     const ringMat = new THREE.MeshBasicMaterial({
-                        color: 0x2d8f91, transparent: true, opacity: 0,
+                        color: 0x2d7f80, transparent: true, opacity: 0,
                         side: THREE.DoubleSide, depthWrite: false,
                     });
                     const ring = new THREE.Mesh(ringGeo, ringMat);
@@ -1586,9 +1445,9 @@
 
                 // ── Media pillar nodes (small branded glowing spheres) ──
                 const PILLARS = [
-                    { label: 'K.E.L.M. 101.9 Radio', anchor: LOCATIONS[0], offset: new THREE.Vector3(0.05, 0.06, 0.02), color: 0x2d8f91 },
+                    { label: 'K.E.L.M. 101.9 Radio', anchor: LOCATIONS[0], offset: new THREE.Vector3(0.05, 0.06, 0.02), color: 0x2d7f80 },
                     { label: 'BRAY Magazine', anchor: LOCATIONS[1], offset: new THREE.Vector3(-0.05, 0.06, 0.02), color: 0xdbc46d },
-                    { label: 'Digital Streaming', anchor: LOCATIONS[1], offset: new THREE.Vector3(0.06, -0.04, 0.04), color: 0x2d8f91 },
+                    { label: 'Digital Streaming', anchor: LOCATIONS[1], offset: new THREE.Vector3(0.06, -0.04, 0.04), color: 0x2d7f80 },
                 ];
                 const pillarGroup = new THREE.Group();
                 tiltGroup.add(pillarGroup);
@@ -1611,44 +1470,17 @@
                 });
 
 
-                // ── Cinematic lighting rig ────────────────────────────
-                // Low ambient keeps shadows dark and dramatic — the key light
-                // sculpts the sphere and gives real 3D depth.
-                scene.add(new THREE.AmbientLight(0xfff0d8, 0.14));
-
-                // KEY LIGHT — warm ivory-gold, upper-left (classic portrait/product position)
-                // Strong enough to create clear light-vs-shadow contrast across the sphere.
-                const sun = new THREE.DirectionalLight(0xfff6e8, 3.4);
-                sun.position.set(-2.0, 2.2, 2.8);
+                scene.add(new THREE.AmbientLight(0xfff5e0, 0.8));
+                const sun = new THREE.DirectionalLight(0xfffaf0, 1.1);
+                sun.position.set(-1.5, 1.8, 2.4);
                 scene.add(sun);
-
-                // RIM LIGHT — cool teal edge trace, opposite side of key
-                // Creates the cinematic "halo" silhouette confirming depth.
-                const rim = new THREE.DirectionalLight(0x4ecfd4, 0.90);
-                rim.position.set(2.8, -0.6, -2.2);
+                const rim = new THREE.DirectionalLight(0xffd580, 0.20);
+                rim.position.set(2.5, -0.8, -2.0);
                 scene.add(rim);
-
-                // FILL LIGHT — very soft warm bounce from below-front
-                // Lifts shadow detail just enough without flattening the form.
-                const fill = new THREE.DirectionalLight(0xffecc8, 0.22);
-                fill.position.set(0.5, -2.5, 1.0);
+                // Subtle teal fill from below
+                const fill = new THREE.DirectionalLight(0x80d4d0, 0.10);
+                fill.position.set(0, -2, 0);
                 scene.add(fill);
-
-                // BACK KICK — teal from behind-top for atmosphere separation
-                const kick = new THREE.DirectionalLight(0x2d8f91, 0.20);
-                kick.position.set(0, 1.2, -3.0);
-                scene.add(kick);
-
-                // SPECULAR POINT — tight warm gold near key side (cinema sparkle / polish)
-                // Low radius keeps it local so it creates a visible glossy hotspot.
-                const pointGold = new THREE.PointLight(0xffe8b0, 1.8, 3.2);
-                pointGold.position.set(-1.2, 1.6, 2.0);
-                scene.add(pointGold);
-
-                // SECONDARY POINT — teal-cool fill on the shadow side for depth separation
-                const pointCool = new THREE.PointLight(0x3ab8bc, 0.55, 3.8);
-                pointCool.position.set(1.8, -1.0, -1.5);
-                scene.add(pointCool);
 
                 // ── Particle cloud (floating sparks around globe) ─────
                 const sparkCount = 38;
@@ -1882,14 +1714,8 @@
                         loc._ring.material.opacity += (ringTarget - loc._ring.material.opacity) * 0.2;
                     });
 
-                    sun.position.x = -2.0 + Math.sin(time * 0.18) * 0.35;
-                    sun.position.y =  2.2 + Math.cos(time * 0.14) * 0.25;
-                    // Subtle gold point light drift for cinematic shimmer
-                    pointGold.position.x = -1.2 + Math.sin(time * 0.22) * 0.3;
-                    pointGold.position.y =  1.6 + Math.cos(time * 0.17) * 0.2;
-                    // Cool secondary point — gentle counter-drift on shadow side
-                    pointCool.position.x =  1.8 + Math.sin(time * 0.19 + 1.2) * 0.25;
-                    pointCool.position.y = -1.0 + Math.cos(time * 0.15 + 0.8) * 0.18;
+                    sun.position.x = -1.5 + Math.sin(time * 0.18) * 0.4;
+                    sun.position.y =  1.8 + Math.cos(time * 0.14) * 0.3;
 
                     texture.needsUpdate = (pending === 0);
                     renderer.render(scene, camera);
