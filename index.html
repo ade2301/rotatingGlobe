@@ -18,7 +18,7 @@
             --gold-light: #dbc46d;
             --gold-mid: #d9c06e;
             --gold-deep: #cfb55f;
-            --teal: #2d8f91;        /* true brand teal — brighter, not hunter green */
+            --teal: #2d8f91;        /* true brand teal — brighter */
             --teal-dark: #1f6e70;   /* darker teal, not olive/hunter */
             --teal-mid:  #3aa0a2;   /* mid teal for gradients */
             --ivory: #fdfaf2;       /* pure ivory */
@@ -131,9 +131,14 @@
         .globe-scene {
             position: absolute;
             left: 50%;
-            top: 42%;
+            top: 39%;
             transform: translate(-50%, -50%);
-            width: clamp(240px, min(46vw, 64vh), 760px);
+            /* Bigger, width-led sizing so the globe reads as the primary
+               focal point. The vh branch reserves room (85vh minus a fixed
+               px budget) for the brand copy pinned to the bottom, so the
+               globe grows aggressively on wide/short screens but backs off
+               automatically on tall narrow ones to keep the copy clear. */
+            width: clamp(300px, min(66vw, calc(85vh - 130px)), 1100px);
             aspect-ratio: 1;
             z-index: 2;
         }
@@ -504,7 +509,7 @@
         /* Landscape phones: shrink globe so both globe + badge fit */
         @media (max-height: 500px) {
             .globe-scene {
-                width: clamp(120px, 34vh, 220px);
+                width: clamp(140px, 38vh, 260px);
             }
             .brand-copy__eyebrow { font-size: 1.3rem; }
             .brand-copy__text h1  { font-size: 1.1rem; }
@@ -1071,7 +1076,7 @@
                 // Cap pixel ratio: high DPR on mobile (3×) is expensive and slows animation —
                 // 2× is visually identical but roughly 2× faster to render each frame.
                 const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 2 : 2.5));
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 2 : 3));
                 renderer.setSize(w, h);
                 renderer.physicallyCorrectLights = true;
                 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -1103,10 +1108,17 @@
                 // Between every slot we apply a wide cosine-blend so images
                 // dissolve into each other — no hard seam visible.
 
-                const TW = 4096, TH = 2048;
+                // Texture resolution scales with the container: the globe can now
+                // render much larger (see .globe-scene CSS), so the source texture
+                // needs more pixels to stay crisp instead of stretching/blurring.
+                // Mobile keeps the original budget to protect performance/battery;
+                // desktop gets a meaningful bump since it can render far bigger.
+                const TW = _isMobile ? 4096 : 5120, TH = TW / 2;
                 const offC = document.createElement('canvas');
                 offC.width = TW; offC.height = TH;
                 const oc = offC.getContext('2d');
+                oc.imageSmoothingEnabled = true;
+                oc.imageSmoothingQuality = 'high';
 
                 // Base fill — deep brand teal, not hunter-green-leaning navy.
                 // This is the colour that bleeds through wherever image slots
@@ -1127,7 +1139,7 @@
                 // is viewed at a steep angle (edges of the sphere). Capped at 8
                 // — most mobile GPUs support 8, and it's a meaningful upgrade
                 // over 4 without hurting performance on desktop.
-                texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+                texture.anisotropy = Math.min(16, renderer.capabilities.getMaxAnisotropy());
 
                 // Slot definitions
                 const SLOTS = [
@@ -1187,6 +1199,8 @@
                     const tmp = document.createElement('canvas');
                     tmp.width = sw; tmp.height = TH;
                     const tc = tmp.getContext('2d');
+                    tc.imageSmoothingEnabled = true;
+                    tc.imageSmoothingQuality = 'high';
                     tc.drawImage(img, ox, oy, ow, oh, 0, 0, sw, TH);
 
                     // Apply a cosine alpha mask at edges so adjacent images
