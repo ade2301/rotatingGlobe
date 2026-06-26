@@ -34,14 +34,17 @@
         html,
         body {
             margin: 0;
+            width: 100%;
             height: 100dvh;
             height: 100vh; /* fallback */
+            overflow-x: hidden; /* belt-and-suspenders: never allow horizontal scroll/offset */
         }
 
         body {
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            align-items: stretch;
             background: var(--cream-bottom);
             font-family: Arial, Helvetica, sans-serif;
             color: var(--text);
@@ -51,9 +54,13 @@
         .poster {
             position: relative;
             width: 100%;
+            max-width: 100%;
             flex: 1 1 auto;
             min-height: 0;
             overflow: hidden;
+            display: flex;            /* robust centering fallback */
+            align-items: center;
+            justify-content: center;
             background:
                 radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.92), transparent 55%),
                 linear-gradient(180deg, var(--cream-top) 0%, var(--cream-bottom) 100%);
@@ -131,20 +138,25 @@
         .globe-scene {
             position: absolute;
             left: 50%;
-            top: 39%;
+            top: 50%;
             transform: translate(-50%, -50%);
-            /* Bigger, width-led sizing so the globe reads as the primary
-               focal point. The vh branch reserves room (85vh minus a fixed
-               px budget) for the brand copy pinned to the bottom, so the
-               globe grows aggressively on wide/short screens but backs off
-               automatically on tall narrow ones to keep the copy clear. */
-            width: clamp(300px, min(66vw, calc(85vh - 130px)), 1100px);
+            /* The globe is the hero of the page — it should read as a
+               full-screen, edge-to-edge focal point on every device.
+               Width-led, near-viewport sizing (clamped only to stay just
+               inside the viewport on very large/small screens) so it
+               always dominates the composition. */
+            width: clamp(320px, min(94vw, 94vh), 1500px);
             aspect-ratio: 1;
             z-index: 2;
         }
 
-        /* ── Brand copy — pinned to bottom of poster ── */
+        /* ── Brand copy — pinned to bottom of poster ──
+           Hidden by default (desktop / big screens, where the globe
+           fills the view and there's no spare room below it).
+           Re-enabled only inside the small-screen media query below,
+           for phones that still have space under the globe. */
         .brand-copy {
+            display: none;
             position: absolute;
             bottom: clamp(14px, 3vh, 40px);
             left: 50%;
@@ -296,7 +308,7 @@
            when the canvas is scaled by devicePixelRatio — this reduces the
            jagged "pixelated" look on mid-range phones with imperfect GPU AA. */
         .globe canvas {
-            filter: contrast(1.12) saturate(1.18) brightness(1.04);
+            filter: contrast(1.15) saturate(1.22) brightness(1.05);
             image-rendering: auto;
             -webkit-font-smoothing: antialiased;
         }
@@ -389,130 +401,218 @@
             }
         }
 
-        /* ── Brand copy ──────────────────────────────────────────── */
 
-        .brand-copy__eyebrow {
-            font-family: "Great Vibes", "Cormorant Garamond", Georgia, serif;
-            font-size: clamp(1.8rem, 6vw, 3.1rem);
-            color: #1f8082;   /* true teal, not hunter green */
-            font-weight: 400;
-            margin-bottom: 2px;
-        }
-
-        .brand-copy__text h1 {
-            margin: 0;
-            font-family: "Cormorant Garamond", Georgia, serif;
-            font-size: clamp(1.3rem, 4.5vw, 2.4rem);
-            line-height: 0.9;
-            letter-spacing: -0.01em;
-            font-weight: 700;
-            color: #1f7476;  /* true teal, not hunter */
-        }
-
-        .brand-copy__text p {
-            margin: 5px 0 0;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: clamp(0.78rem, 2.5vw, 0.95rem);
-            font-weight: 500;
-            letter-spacing: 0.04em;
-            color: rgba(120, 100, 62, 0.82);
-        }
-
-        .accent {
-            color: #c79a3e;
-        }
-
-        .brand-copy__row {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            transform: translateX(-6px);
-        }
-
-        /* Mic icon */
-        .mic {
-            position: relative;
-            width: 24px;
-            height: 40px;
-            flex: 0 0 auto;
-            filter: drop-shadow(0 0 7px rgba(255, 210, 95, 0.4));
-        }
-
-        .mic__head,
-        .mic__body,
-        .mic__stand {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(180deg, #fff3cd 0%, #ffd96e 30%, #c98a15 100%);
-        }
-
-        .mic__head {
-            top: 0;
-            width: 22px;
-            height: 22px;
-            border-radius: 12px 12px 10px 10px;
-        }
-
-        .mic__body {
-            top: 18px;
-            width: 11px;
-            height: 15px;
-            border-radius: 6px;
-        }
-
-        .mic__stand {
-            bottom: 0;
-            width: 4px;
-            height: 13px;
-            border-radius: 999px;
-        }
-
-        .mic__stand::before {
-            content: "";
-            position: absolute;
-            left: 50%;
-            bottom: -5px;
-            width: 16px;
-            height: 4px;
-            transform: translateX(-50%);
-            border-radius: 999px;
-            background: linear-gradient(90deg, transparent, rgba(251, 226, 160, 0.9), transparent);
-        }
-
-        .mic__head::before {
-            content: "";
-            position: absolute;
-            inset: 5px 5px 7px;
-            border-radius: 8px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.30), transparent);
-        }
-
-        .brand-copy__text {
-            text-align: left;
-        }
-
-        .brand-copy__bar {
-            margin-top: 11px;
-            height: 2px;
-            border-radius: 999px;
-            background: linear-gradient(90deg,
-                    rgba(209, 170, 78, 0),
-                    rgba(244, 220, 148, 0.97),
-                    rgba(209, 170, 78, 0));
-        }
 
         /* ── Poster-level contrast / colour grade via CSS filter ─────── */
         .poster {
             filter: contrast(1.06) saturate(1.10);
         }
-        /* Landscape phones: shrink globe so both globe + badge fit */
+        /* Landscape phones: keep the globe big but clear of UI chrome */
         @media (max-height: 500px) {
             .globe-scene {
-                width: clamp(140px, 38vh, 260px);
+                width: clamp(160px, 52vh, 340px);
             }
             .brand-copy__eyebrow { font-size: 1.3rem; }
             .brand-copy__text h1  { font-size: 1.1rem; }
+        }
+
+        /* ── Brand copy — full styling (small screens only) ──────────
+           On phones the globe doesn't need the full viewport height,
+           leaving clear space underneath it. This restores the brand
+           copy block (eyebrow, title, tagline, mic icon, gold bar) for
+           that space — but ONLY on small screens. Desktop/large screens
+           keep .brand-copy { display: none } from above, untouched. */
+        @media (max-width: 640px) and (min-height: 560px) {
+            .brand-copy {
+                display: block;
+            }
+
+            .brand-copy__eyebrow {
+                font-family: "Great Vibes", "Cormorant Garamond", Georgia, serif;
+                font-size: clamp(1.8rem, 6vw, 3.1rem);
+                color: #1f8082;   /* true teal, not hunter green */
+                font-weight: 400;
+                margin-bottom: 2px;
+            }
+
+            .brand-copy__text h1 {
+                margin: 0;
+                font-family: "Cormorant Garamond", Georgia, serif;
+                font-size: clamp(1.3rem, 4.5vw, 2.4rem);
+                line-height: 0.9;
+                letter-spacing: -0.01em;
+                font-weight: 700;
+                color: #1f7476;  /* true teal, not hunter */
+            }
+
+            .brand-copy__text p {
+                margin: 5px 0 0;
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: clamp(0.78rem, 2.5vw, 0.95rem);
+                font-weight: 500;
+                letter-spacing: 0.04em;
+                color: rgba(120, 100, 62, 0.82);
+            }
+
+            .brand-copy .accent {
+                color: #c79a3e;
+            }
+
+            .brand-copy__row {
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                transform: translateX(-6px);
+            }
+
+            /* Mic icon */
+            .brand-copy .mic {
+                position: relative;
+                width: 24px;
+                height: 40px;
+                flex: 0 0 auto;
+                filter: drop-shadow(0 0 7px rgba(255, 210, 95, 0.4));
+            }
+
+            .brand-copy .mic__head,
+            .brand-copy .mic__body,
+            .brand-copy .mic__stand {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(180deg, #fff3cd 0%, #ffd96e 30%, #c98a15 100%);
+            }
+
+            .brand-copy .mic__head {
+                top: 0;
+                width: 22px;
+                height: 22px;
+                border-radius: 12px 12px 10px 10px;
+            }
+
+            .brand-copy .mic__body {
+                top: 18px;
+                width: 11px;
+                height: 15px;
+                border-radius: 6px;
+            }
+
+            .brand-copy .mic__stand {
+                bottom: 0;
+                width: 4px;
+                height: 13px;
+                border-radius: 999px;
+            }
+
+            .brand-copy .mic__stand::before {
+                content: "";
+                position: absolute;
+                left: 50%;
+                bottom: -5px;
+                width: 16px;
+                height: 4px;
+                transform: translateX(-50%);
+                border-radius: 999px;
+                background: linear-gradient(90deg, transparent, rgba(251, 226, 160, 0.9), transparent);
+            }
+
+            .brand-copy .mic__head::before {
+                content: "";
+                position: absolute;
+                inset: 5px 5px 7px;
+                border-radius: 8px;
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.30), transparent);
+            }
+
+            .brand-copy__text {
+                text-align: left;
+            }
+
+            .brand-copy__bar {
+                margin-top: 11px;
+                height: 2px;
+                border-radius: 999px;
+                background: linear-gradient(90deg,
+                        rgba(209, 170, 78, 0),
+                        rgba(244, 220, 148, 0.97),
+                        rgba(209, 170, 78, 0));
+            }
+
+            /* Eyebrow typewriter inner span — keep Great Vibes + teal */
+            .brand-copy__eyebrow .tw-inner {
+                font-family: "Great Vibes", "Cormorant Garamond", Georgia, serif;
+                font-size: inherit;
+                color: #1f8082;
+                font-weight: 400;
+            }
+
+            /* Blinking cursor */
+            .brand-copy .tw-cursor {
+                display: inline-block;
+                font-weight: 300;
+                opacity: 1;
+                animation: twBlink 0.75s step-end infinite;
+                color: #c79a3e;
+                margin-left: 1px;
+            }
+
+            .brand-copy .tw-cursor.tw-done {
+                animation: twFadeOut 0.4s 0.8s forwards;
+            }
+
+            /* Mic hover-reveal: slides down and settles */
+            .brand-copy .mic--animate {
+                opacity: 0;
+                transform: translateY(-18px);
+                animation: micDrop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 3.0s forwards;
+                filter: drop-shadow(0 0 0px rgba(255, 210, 95, 0));
+            }
+
+            /* Gold bar wipe-in from left */
+            .brand-copy__bar--animate {
+                transform-origin: left center;
+                transform: scaleX(0);
+                opacity: 0;
+                animation: barWipe 0.7s ease 4.6s forwards;
+            }
+        }
+
+        @keyframes twBlink {
+            0%, 100% { opacity: 1; }
+            50%      { opacity: 0; }
+        }
+
+        @keyframes twFadeOut {
+            to { opacity: 0; }
+        }
+
+        @keyframes micDrop {
+            0% {
+                opacity: 0;
+                transform: translateY(-18px);
+                filter: drop-shadow(0 0 0px rgba(255, 210, 95, 0));
+            }
+            60% {
+                opacity: 1;
+                transform: translateY(3px);
+                filter: drop-shadow(0 0 10px rgba(255, 210, 95, 0.7));
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+                filter: drop-shadow(0 0 7px rgba(255, 210, 95, 0.4));
+            }
+        }
+
+        @keyframes barWipe {
+            from {
+                transform: scaleX(0);
+                opacity: 0;
+            }
+            to {
+                transform: scaleX(1);
+                opacity: 1;
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -558,98 +658,10 @@
 
 
 
-        /* ── Typewriter & brand text animations ───────────────────── */
+        
 
-        /* Eyebrow: keep the Great Vibes font, hide accent color initially —
-   the JS will inject plain text so we re-apply the accent via JS */
-        .brand-copy__eyebrow .tw-inner {
-            font-family: "Great Vibes", "Cormorant Garamond", Georgia, serif;
-            font-size: inherit;
-            color: #1f8082;  /* true brand teal */
-            font-weight: 400;
-        }
+        
 
-        /* Blinking cursor */
-        .tw-cursor {
-            display: inline-block;
-            font-weight: 300;
-            opacity: 1;
-            animation: twBlink 0.75s step-end infinite;
-            color: #c79a3e;
-            margin-left: 1px;
-        }
-
-        .tw-cursor.tw-done {
-            animation: twFadeOut 0.4s 0.8s forwards;
-        }
-
-        @keyframes twBlink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0;
-            }
-        }
-
-        @keyframes twFadeOut {
-            to {
-                opacity: 0;
-            }
-        }
-
-        /* Mic hover-reveal effect:
-    mic slides down from above and settles, timed to when
-    the h1 typewriter starts so it looks like it's "arriving" */
-        .mic--animate {
-            opacity: 0;
-            transform: translateY(-18px);
-            animation: micDrop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 3.0s forwards;
-            filter: drop-shadow(0 0 0px rgba(255, 210, 95, 0));
-        }
-
-        @keyframes micDrop {
-            0% {
-                opacity: 0;
-                transform: translateY(-18px);
-                filter: drop-shadow(0 0 0px rgba(255, 210, 95, 0));
-            }
-
-            60% {
-                opacity: 1;
-                transform: translateY(3px);
-                filter: drop-shadow(0 0 10px rgba(255, 210, 95, 0.7));
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-                filter: drop-shadow(0 0 7px rgba(255, 210, 95, 0.4));
-            }
-        }
-
-        /* Gold bar wipe-in from left */
-        .brand-copy__bar--animate {
-            transform-origin: left center;
-            transform: scaleX(0);
-            opacity: 0;
-            animation: barWipe 0.7s ease 4.6s forwards;
-        }
-
-        @keyframes barWipe {
-            from {
-                transform: scaleX(0);
-                opacity: 0;
-            }
-
-            to {
-                transform: scaleX(1);
-                opacity: 1;
-            }
-        }
 
         .poster::after {
             content: "";
@@ -679,16 +691,20 @@
         /* ── Marker tap targets (projected HTML overlays) ────────── */
         .marker-tap {
             position: absolute;
-            width: 68px;
-            height: 68px;
-            margin-left: -34px;
-            margin-top: -34px;
+            /* Hit-area scales with viewport so it stays comfortably
+               tappable even as the globe grows toward full-screen size. */
+            width: clamp(64px, 6.5vw, 110px);
+            height: clamp(64px, 6.5vw, 110px);
+            margin-left: clamp(-55px, -3.25vw, -32px);
+            margin-top: clamp(-55px, -3.25vw, -32px);
             border-radius: 50%;
+            display: block;
             cursor: pointer;
             z-index: 15;
             /* Invisible but interactive */
             background: transparent;
             border: none;
+            text-decoration: none;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -700,10 +716,14 @@
             position: absolute;
             pointer-events: none;
             z-index: 50;
-            min-width: 170px;
-            max-width: 230px;
-            padding: 10px 14px;
-            border-radius: 10px;
+            /* Scales with viewport, mirroring how .globe-scene scales, so
+               the tooltip grows in proportion with the globe on big
+               screens instead of staying pinned to a small fixed size
+               that reads as undersized next to a near-full-viewport globe. */
+            min-width: clamp(170px, 16vw, 280px);
+            max-width: clamp(230px, 22vw, 380px);
+            padding: clamp(10px, 0.9vw, 18px) clamp(14px, 1.3vw, 24px);
+            border-radius: clamp(10px, 0.9vw, 16px);
             background: linear-gradient(180deg, rgba(30, 130, 135, 0.96), rgba(18, 100, 106, 0.96));
             border: 1.5px solid var(--gold-light);
             box-shadow: 0 8px 24px rgba(0,0,0,0.38), 0 0 20px rgba(219,196,109,0.28);
@@ -730,10 +750,10 @@
         }
 
         .globe-tooltip.tooltip--below::after {
-            top: -7px;
+            top: clamp(-10px, -0.55vw, -7px);
             bottom: auto;
             border-top: none;
-            border-bottom: 7px solid var(--gold-light);
+            border-bottom: clamp(7px, 0.55vw, 10px) solid var(--gold-light);
         }
 
         /* ── Location info modal ────────────────────────────────── */
@@ -828,21 +848,21 @@
 
         .globe-tooltip__title {
             font-weight: 700;
-            font-size: 0.92rem;
+            font-size: clamp(0.92rem, 1vw, 1.25rem);
             letter-spacing: 0.03em;
             color: var(--gold-light);
             margin-bottom: 2px;
         }
 
         .globe-tooltip__role {
-            font-size: 0.78rem;
+            font-size: clamp(0.78rem, 0.85vw, 1.05rem);
             font-weight: 600;
             color: #fbf8ef;
             margin-bottom: 4px;
         }
 
         .globe-tooltip__info {
-            font-size: 0.74rem;
+            font-size: clamp(0.74rem, 0.78vw, 0.98rem);
             line-height: 1.35;
             color: rgba(251,248,239,0.85);
         }
@@ -854,9 +874,9 @@
             bottom: -7px;
             transform: translateX(-50%);
             width: 0; height: 0;
-            border-left: 7px solid transparent;
-            border-right: 7px solid transparent;
-            border-top: 7px solid var(--gold-light);
+            border-left: clamp(7px, 0.55vw, 10px) solid transparent;
+            border-right: clamp(7px, 0.55vw, 10px) solid transparent;
+            border-top: clamp(7px, 0.55vw, 10px) solid var(--gold-light);
         }
     </style>
 
@@ -907,10 +927,16 @@
                 <button class="marker-tap" id="tap-chicago" aria-label="Chicago location info"></button>
                 <button class="marker-tap" id="tap-la" aria-label="Los Angeles location info"></button>
                 <button class="marker-tap" id="tap-london" aria-label="London location info"></button>
+                <!-- Store pillar: a real link, not a modal-trigger button —
+                 edit the href below to point at your storefront. -->
+                <a class="marker-tap" id="tap-store" href="https://www.ellbmedia.com/category/all-products" target="_blank" rel="noopener noreferrer" aria-label="Visit our store"></a>
             </section>
 
             </div><!-- /.poster__content -->
 
+            <!-- Brand copy: hidden on desktop/large screens via CSS.
+                 Visible only on small screens where the globe leaves
+                 spare vertical space beneath it (see media query). -->
             <section class="brand-copy" aria-label="Brand information">
                 <div class="brand-copy__eyebrow">
                     <span class="typewriter" data-text="Ell B. Media" data-delay="2200">
@@ -938,6 +964,8 @@
                 </div>
                 <div class="brand-copy__bar brand-copy__bar--animate"></div>
             </section>
+
+            
         </main>
     </div>
 
@@ -956,51 +984,7 @@
 
 
 
-    <script>
-        (function () {
-            // Typewriter engine
-            // Reads data-text and data-delay from each .typewriter element
-            // data-delay = ms after page load before typing starts
-
-            function typewrite(el) {
-                const target = el.dataset.text || '';
-                const delay = parseInt(el.dataset.delay) || 0;
-                const inner = el.querySelector('.tw-inner');
-                const cursor = el.querySelector('.tw-cursor');
-                const speed = 52; // ms per character
-
-                // For the eyebrow, re-inject the accent span mid-type
-                const isEyebrow = el.closest('.brand-copy__eyebrow') !== null;
-
-                setTimeout(function () {
-                    let i = 0;
-                    const interval = setInterval(function () {
-                        i++;
-                        const slice = target.slice(0, i);
-
-                        if (isEyebrow) {
-                            // "Ell B. Media" — make the "B." gold
-                            const formatted = slice
-                                .replace(/B\./g, '<span style="color:#c79a3e">B.</span>');
-                            inner.innerHTML = formatted;
-                        } else {
-                            inner.textContent = slice;
-                        }
-
-                        if (i >= target.length) {
-                            clearInterval(interval);
-                            cursor.classList.add('tw-done');
-                        }
-                    }, speed);
-                }, delay);
-            }
-
-            // Wait for page load then initialise all typewriters
-            window.addEventListener('load', function () {
-                document.querySelectorAll('.typewriter').forEach(typewrite);
-            });
-        })();
-    </script>
+    
     <script>
         // for globe
         /**
@@ -1113,7 +1097,7 @@
                 // needs more pixels to stay crisp instead of stretching/blurring.
                 // Mobile keeps the original budget to protect performance/battery;
                 // desktop gets a meaningful bump since it can render far bigger.
-                const TW = _isMobile ? 4096 : 5120, TH = TW / 2;
+                const TW = _isMobile ? 4096 : 5760, TH = TW / 2;
                 const offC = document.createElement('canvas');
                 offC.width = TW; offC.height = TH;
                 const oc = offC.getContext('2d');
@@ -1181,19 +1165,33 @@
                 function drawSlot(img, sx, sw) {
                     const srcAR = img.width / img.height;
                     const dstAR = sw / TH;
-                    let ox, oy, ow, oh;
-                    // Zoom-out factor: shows a bit more of each source image
-                    // instead of an aggressive tight crop (reduces "too zoomed" look)
-                    const ZOOM_OUT = 1.35;
+
+                    // Tightest distortion-free "cover" crop: matches the
+                    // destination aspect ratio exactly, so the image is
+                    // never stretched/squashed — only cropped.
+                    let ow, oh;
                     if (srcAR > dstAR) {
-                        oh = img.height; ow = oh * dstAR * ZOOM_OUT;
-                        if (ow > img.width) ow = img.width;
-                        oy = 0; ox = (img.width - ow) / 2;
+                        oh = img.height;
+                        ow = oh * dstAR;
                     } else {
-                        ow = img.width; oh = ow / dstAR * ZOOM_OUT;
-                        if (oh > img.height) oh = img.height;
-                        ox = 0; oy = (img.height - oh) / 2;
+                        ow = img.width;
+                        oh = ow / dstAR;
                     }
+
+                    // Zoom-out: enlarge that same-aspect crop uniformly so a
+                    // bit more of the source is visible (less tight a crop),
+                    // clamped so it never exceeds the source image's actual
+                    // bounds — this keeps the aspect ratio intact, so there's
+                    // no stretching, just a wider/taller honest crop.
+                    // Raised 1.35 → 1.75 since the globe now renders much
+                    // larger on screen, which was magnifying the same tight
+                    // crop into an over-zoomed close-up.
+                    const ZOOM_OUT = 1.75;
+                    const scale = Math.min(ZOOM_OUT, img.width / ow, img.height / oh);
+                    ow *= scale;
+                    oh *= scale;
+                    const ox = (img.width - ow) / 2;
+                    const oy = (img.height - oh) / 2;
 
                     // Draw image into an offscreen temp canvas first
                     const tmp = document.createElement('canvas');
@@ -1392,6 +1390,23 @@
                         info: 'Featuring collaborator, Stuart Epps.',
                         xDeg: 65, yDeg: 22,
                     },
+                    {
+                        // The store pillar: same interactive treatment as the
+                        // location markers above (glowing marker, halo, hover
+                        // ring, and a real tap target) — but on click it links
+                        // straight out to the storefront instead of opening
+                        // the info modal. Positioned just to the left of the
+                        // Chicago/Gary marker (more negative xDeg = further
+                        // toward the globe's left/west edge on the visible
+                        // front face), at a close yDeg so the two read as a
+                        // connected pair and the arc between them stays short.
+                        id: 'store',
+                        name: 'E.B. Media Store',
+                        role: 'Official Merchandise',
+                        info: 'Visit our store',
+                        xDeg: -56, yDeg: 15,
+                        isStore: true,
+                    },
                 ];
 
                 const MARKER_RADIUS = 1.02;
@@ -1454,11 +1469,48 @@
                     return group;
                 }
 
+                // Build a store marker: a small faceted gold gift-box with a
+                // ribbon cross — same glowing-gold marker family as the mic
+                // pins, but visually distinct so it reads as "the store".
+                function buildStoreMarker() {
+                    const group = new THREE.Group();
+
+                    const goldMat = new THREE.MeshStandardMaterial({
+                        color: 0xffe090,
+                        emissive: 0xffb930,
+                        emissiveIntensity: 1.4,
+                        roughness: 0.28,
+                        metalness: 0.72,
+                    });
+
+                    const box = new THREE.Mesh(new THREE.BoxGeometry(0.052, 0.044, 0.052), goldMat);
+                    box.position.y = 0.022;
+                    group.add(box);
+
+                    const ribbonMat = new THREE.MeshStandardMaterial({
+                        color: 0xdba830,
+                        emissive: 0xc07010,
+                        emissiveIntensity: 0.9,
+                        roughness: 0.35,
+                        metalness: 0.6,
+                    });
+                    const ribbonX = new THREE.Mesh(new THREE.BoxGeometry(0.060, 0.046, 0.013), ribbonMat);
+                    ribbonX.position.y = 0.022;
+                    group.add(ribbonX);
+                    const ribbonZ = new THREE.Mesh(new THREE.BoxGeometry(0.013, 0.046, 0.060), ribbonMat);
+                    ribbonZ.position.y = 0.022;
+                    group.add(ribbonZ);
+
+                    return group;
+                }
+
                 LOCATIONS.forEach(loc => {
                     const pos = frontVec3(loc.xDeg, loc.yDeg, MARKER_RADIUS);
 
-                    // Glowing gold mic marker, oriented to point outward from sphere
-                    const mic = buildMicMarker();
+                    // Glowing gold marker — mic for broadcast locations,
+                    // gift-box for the store — oriented to point outward
+                    // from the sphere.
+                    const mic = loc.isStore ? buildStoreMarker() : buildMicMarker();
                     mic.position.copy(pos);
                     mic.lookAt(pos.clone().multiplyScalar(2));
                     mic.rotation.x += Math.PI / 2; // upright relative to surface normal
@@ -1555,6 +1607,7 @@
                 arcGroup.add(buildArc(LOCATIONS[0]._pos, LOCATIONS[1]._pos)); // Chicago - LA
                 arcGroup.add(buildArc(LOCATIONS[1]._pos, LOCATIONS[2]._pos)); // LA - London
                 arcGroup.add(buildArc(LOCATIONS[2]._pos, LOCATIONS[0]._pos)); // London - Chicago
+                arcGroup.add(buildArc(LOCATIONS[0]._pos, LOCATIONS[3]._pos)); // Chicago - Store
 
                 // ── Media pillar nodes (small branded glowing spheres) ──
                 const PILLARS = [
@@ -1651,6 +1704,7 @@
                     chicago: document.getElementById('tap-chicago'),
                     la:      document.getElementById('tap-la'),
                     london:  document.getElementById('tap-london'),
+                    store:   document.getElementById('tap-store'),
                 };
 
                 // Modal refs
@@ -1717,14 +1771,19 @@
                     }, HOVER_GRACE_MS);
                 }
 
-                // Wire up each tap button to open its modal
+                // Wire up each tap target. Location markers open the info
+                // modal on click; the store pillar is a real <a href> link,
+                // so it just needs hover/tooltip wiring, not a click handler.
                 LOCATIONS.forEach(loc => {
                     const btn = tapEls[loc.id];
                     if (!btn) return;
                     loc._ringTarget = 0; // smoothly-faded ring opacity target
 
-                    // Click/tap → modal (works on all devices)
-                    btn.addEventListener('click', () => openModal(loc));
+                    // Click/tap → modal (works on all devices). Store skips
+                    // this; its native href handles navigation.
+                    if (!loc.isStore) {
+                        btn.addEventListener('click', () => openModal(loc));
+                    }
 
                     // Hover → tooltip + rotation slowdown (desktop only)
                     btn.addEventListener('mouseenter', () => {
@@ -1741,9 +1800,15 @@
                 });
 
                 function showTooltip(loc, cx, cy, sceneRect) {
-                    tooltipTitle.textContent = loc.name;
-                    tooltipRole.textContent  = loc.role;
-                    tooltipInfo.textContent  = loc.info;
+                    if (loc.isStore) {
+                        tooltipTitle.textContent = 'Visit our store';
+                        tooltipRole.textContent  = '';
+                        tooltipInfo.textContent  = '';
+                    } else {
+                        tooltipTitle.textContent = loc.name;
+                        tooltipRole.textContent  = loc.role;
+                        tooltipInfo.textContent  = loc.info;
+                    }
 
                     let x = cx - sceneRect.left;
                     let y = cy - sceneRect.top;
@@ -1901,6 +1966,54 @@
 
         })();
 
+    </script>
+
+    <script>
+        (function () {
+            // Typewriter engine — only does anything on screens where
+            // .brand-copy is visible (small screens); elements simply
+            // sit empty/hidden otherwise, at negligible cost.
+            // Reads data-text and data-delay from each .typewriter element.
+            // data-delay = ms after page load before typing starts.
+
+            function typewrite(el) {
+                const target = el.dataset.text || '';
+                const delay = parseInt(el.dataset.delay) || 0;
+                const inner = el.querySelector('.tw-inner');
+                const cursor = el.querySelector('.tw-cursor');
+                const speed = 52; // ms per character
+
+                // For the eyebrow, re-inject the accent span mid-type
+                const isEyebrow = el.closest('.brand-copy__eyebrow') !== null;
+
+                setTimeout(function () {
+                    let i = 0;
+                    const interval = setInterval(function () {
+                        i++;
+                        const slice = target.slice(0, i);
+
+                        if (isEyebrow) {
+                            // "Ell B. Media" — make the "B." gold
+                            const formatted = slice
+                                .replace(/B\./g, '<span style="color:#c79a3e">B.</span>');
+                            inner.innerHTML = formatted;
+                        } else {
+                            inner.textContent = slice;
+                        }
+
+                        if (i >= target.length) {
+                            clearInterval(interval);
+                            cursor.classList.add('tw-done');
+                        }
+                    }, speed);
+                }, delay);
+            }
+
+            // Wait for page load then initialise all typewriters
+            window.addEventListener('load', function () {
+                document.querySelectorAll('.typewriter').forEach(typewrite);
+            });
+        })();
     </script>
 
     <script>
