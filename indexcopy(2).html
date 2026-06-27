@@ -35,25 +35,13 @@
         body {
             margin: 0;
             width: 100%;
-            height: 100%;       /* primary: fill whatever box we're given
-                                    (iframe, div, anything) — this is the
-                                    most embed-safe unit, since 100vh/100dvh
-                                    measure the iframe's own viewport and
-                                    can disagree with the box the parent
-                                    page actually rendered for us. */
-            min-height: 100dvh;
-            min-height: 100vh;  /* fallback when html/body aren't given an
-                                    explicit height by something upstream
-                                    (e.g. opened directly, not embedded) */
-            overflow-x: hidden; /* never allow horizontal scroll/offset */
+            height: 100dvh;
+            height: 100vh; /* fallback */
+            overflow-x: hidden; /* belt-and-suspenders: never allow horizontal scroll/offset */
         }
 
         body {
-            overflow: hidden;   /* small screens: locked, unchanged.
-                                    Big screens override this to `auto`
-                                    in the min-width media query below
-                                    so the brand-copy section can scroll
-                                    into view beneath the globe. */
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             align-items: stretch;
@@ -162,278 +150,20 @@
             z-index: 2;
         }
 
-        /* ── Brand copy ──────────────────────────────────────────────
-           Two completely separate presentations, gated by media query:
-           - Small screens (<=640px wide): absolutely positioned over
-             the bottom of the poster, exactly as before — untouched.
-           - Big screens (>640px wide): a normal in-flow section that
-             sits BELOW the poster, revealed by scrolling the page.
-           Default (no query matched yet): hidden, so nothing flashes
-           before the right media query applies. */
+        /* ── Brand copy — pinned to bottom of poster ──
+           Hidden by default (desktop / big screens, where the globe
+           fills the view and there's no spare room below it).
+           Re-enabled only inside the small-screen media query below,
+           for phones that still have space under the globe. */
         .brand-copy {
             display: none;
+            position: absolute;
+            bottom: clamp(14px, 3vh, 40px);
+            left: 50%;
+            transform: translateX(-50%);
             width: clamp(220px, 88vw, 600px);
             text-align: center;
             z-index: 4;
-        }
-
-        .brand-copy-section {
-            display: none;   /* enabled per-breakpoint below */
-        }
-
-        /* ── Big screens: brand copy as a scrollable section below
-           the poster ─────────────────────────────────────────────── */
-        @media (min-width: 641px) {
-            html, body {
-                overflow-y: auto;     /* allow the page to scroll so the
-                                          section below the globe can be
-                                          reached */
-                height: auto;
-                min-height: 100dvh;
-                min-height: 100vh;
-            }
-
-            body {
-                overflow: visible;
-            }
-
-            .poster {
-                flex: 0 0 100vh;       /* poster keeps its full-viewport
-                                           hero look, unaffected */
-                flex: 0 0 100dvh;
-                min-height: 480px;
-                /* The shared cream background now lives on #loader-overlay
-                   (below), spanning the full scrollable height. Poster
-                   becomes transparent so that ONE continuous gradient
-                   shows through both it and .brand-copy-section — this
-                   is what actually removes the seam: matching colors
-                   between two independent gradients never lines up
-                   perfectly, but one gradient painted once has no seam
-                   to begin with. */
-                background: transparent;
-                /* .poster's own base filter (contrast/saturate, defined
-                   unconditionally further down) would otherwise STACK
-                   with #loader-overlay's filter below, double-applying
-                   the color grade and darkening/muting the poster's
-                   visible background relative to .brand-copy-section —
-                   which was the real cause of the two sections looking
-                   like different tones. Cancel it out here. */
-                filter: none;
-                position: relative;
-                z-index: 1;   /* stack above #loader-overlay::before's noise layer */
-            }
-
-            #loader-overlay {
-                position: relative;
-                /* Extra intermediate stops smooth out what was a hard
-                   2-stop radial fade (white -> transparent) — with only
-                   two stops over a large area, the contrast filter below
-                   was amplifying ordinary 8-bit color stepping into
-                   visible banding/"stretch mark" striations. More steps
-                   means smaller, imperceptible jumps between them. */
-                background:
-                    radial-gradient(circle 42vh at 50% 38vh,
-                        rgba(255, 255, 255, 0.92) 0%,
-                        rgba(255, 255, 255, 0.74) 18%,
-                        rgba(255, 255, 255, 0.52) 34%,
-                        rgba(255, 255, 255, 0.32) 50%,
-                        rgba(255, 255, 255, 0.16) 65%,
-                        rgba(255, 255, 255, 0.06) 80%,
-                        rgba(255, 255, 255, 0) 100%),
-                    linear-gradient(180deg, var(--cream-top) 0%, var(--cream-bottom) 55%, var(--cream-top) 100%);
-                filter: contrast(1.04) saturate(1.08);
-            }
-
-            /* Belt-and-suspenders against banding: a barely-visible
-               noise dither over the whole gradient. Smooth gradients
-               can still show faint stepping on some displays/GPUs even
-               with many color stops — a touch of grain breaks up any
-               remaining flat bands without being visible as "texture"
-               at normal viewing distance. */
-            #loader-overlay::before {
-                content: "";
-                position: absolute;
-                inset: 0;
-                pointer-events: none;
-                z-index: 0;
-                opacity: 0.025;
-                background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-                mix-blend-mode: overlay;
-            }
-
-            /* .poster__bottom is an opaque absolutely-positioned overlay
-               that sits ON TOP of #loader-overlay's shared gradient and
-               was ending in a flat solid color right at .poster's edge
-               — that hard edge (not a color mismatch) was the actual
-               seam. Fading its end to transparent lets the shared
-               gradient behind it show through smoothly instead. */
-            .poster__bottom {
-                background: linear-gradient(180deg, #fbf8ef 0%, rgba(247, 241, 227, 0) 100%);
-            }
-
-            .brand-copy-section {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 100%;
-                padding: 64px 24px 80px;
-                position: relative;
-                z-index: 1;   /* stack above #loader-overlay::before's noise layer */
-                /* Transparent — the cream background is now painted
-                   once on #loader-overlay (see .poster override above),
-                   spanning continuously across both sections so there
-                   is no seam to color-match in the first place. */
-                background: transparent;
-                filter: none;
-            }
-
-            .brand-copy {
-                display: block;
-                position: static;     /* normal flow, not pinned over the globe */
-            }
-
-            .brand-copy__eyebrow {
-                font-family: "Great Vibes", "Cormorant Garamond", Georgia, serif;
-                font-size: clamp(2.2rem, 4vw, 3.4rem);
-                color: #1f8082;
-                font-weight: 400;
-                margin-bottom: 4px;
-            }
-
-            .brand-copy__text h1 {
-                margin: 0;
-                font-family: "Cormorant Garamond", Georgia, serif;
-                font-size: clamp(1.6rem, 3vw, 2.6rem);
-                line-height: 0.95;
-                letter-spacing: -0.01em;
-                font-weight: 700;
-                color: #1f7476;
-            }
-
-            .brand-copy__text p {
-                margin: 8px 0 0;
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: clamp(0.9rem, 1.4vw, 1.05rem);
-                font-weight: 500;
-                letter-spacing: 0.04em;
-                color: rgba(120, 100, 62, 0.82);
-            }
-
-            .brand-copy .accent {
-                color: #c79a3e;
-            }
-
-            .brand-copy__row {
-                display: inline-flex;
-                align-items: center;
-                gap: 16px;
-            }
-
-            .brand-copy .mic {
-                position: relative;
-                width: 28px;
-                height: 46px;
-                flex: 0 0 auto;
-                filter: drop-shadow(0 0 7px rgba(255, 210, 95, 0.4));
-            }
-
-            .brand-copy .mic__head,
-            .brand-copy .mic__body,
-            .brand-copy .mic__stand {
-                position: absolute;
-                left: 50%;
-                transform: translateX(-50%);
-                background: linear-gradient(180deg, #fff3cd 0%, #ffd96e 30%, #c98a15 100%);
-            }
-
-            .brand-copy .mic__head {
-                top: 0;
-                width: 26px;
-                height: 26px;
-                border-radius: 14px 14px 12px 12px;
-            }
-
-            .brand-copy .mic__body {
-                top: 21px;
-                width: 13px;
-                height: 17px;
-                border-radius: 7px;
-            }
-
-            .brand-copy .mic__stand {
-                bottom: 0;
-                width: 5px;
-                height: 15px;
-                border-radius: 999px;
-            }
-
-            .brand-copy .mic__stand::before {
-                content: "";
-                position: absolute;
-                left: 50%;
-                bottom: -6px;
-                width: 18px;
-                height: 5px;
-                transform: translateX(-50%);
-                border-radius: 999px;
-                background: linear-gradient(90deg, transparent, rgba(251, 226, 160, 0.9), transparent);
-            }
-
-            .brand-copy .mic__head::before {
-                content: "";
-                position: absolute;
-                inset: 6px 6px 8px;
-                border-radius: 9px;
-                background: linear-gradient(180deg, rgba(255, 255, 255, 0.30), transparent);
-            }
-
-            .brand-copy__text {
-                text-align: left;
-            }
-
-            .brand-copy__bar {
-                margin-top: 14px;
-                height: 2px;
-                border-radius: 999px;
-                background: linear-gradient(90deg,
-                        rgba(209, 170, 78, 0),
-                        rgba(244, 220, 148, 0.97),
-                        rgba(209, 170, 78, 0));
-            }
-
-            .brand-copy__eyebrow .tw-inner {
-                font-family: "Great Vibes", "Cormorant Garamond", Georgia, serif;
-                font-size: inherit;
-                color: #1f8082;
-                font-weight: 400;
-            }
-
-            .brand-copy .tw-cursor {
-                display: inline-block;
-                font-weight: 300;
-                opacity: 1;
-                animation: twBlink 0.75s step-end infinite;
-                color: #c79a3e;
-                margin-left: 1px;
-            }
-
-            .brand-copy .tw-cursor.tw-done {
-                animation: twFadeOut 0.4s 0.8s forwards;
-            }
-
-            .brand-copy .mic--animate {
-                opacity: 0;
-                transform: translateY(-18px);
-                animation: micDrop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 3.0s forwards;
-                filter: drop-shadow(0 0 0px rgba(255, 210, 95, 0));
-            }
-
-            .brand-copy__bar--animate {
-                transform-origin: left center;
-                transform: scaleX(0);
-                opacity: 0;
-                animation: barWipe 0.7s ease 4.6s forwards;
-            }
         }
 
         /* Soft elliptical shadow grounding the globe onto the band below */
@@ -448,21 +178,6 @@
             filter: blur(6px);
             pointer-events: none;
             z-index: 1;
-        }
-
-        /* On big screens, .poster clips at a fixed 100vh and the shadow
-           above can get cut off mid-fade against that edge, leaving a
-           hard-edged dark smudge right where .brand-copy-section begins.
-           Placed after the base rule above so it wins the cascade —
-           pulling the shadow in and tightening its falloff keeps the
-           whole gradient self-contained and fully faded before the
-           poster's bottom edge. */
-        @media (min-width: 641px) {
-            .globe-scene__shadow {
-                top: 94%;
-                height: 7%;
-                transform: translate(-50%, -10%);
-            }
         }
 
         .globe-scene__glow {
@@ -692,22 +407,6 @@
         .poster {
             filter: contrast(1.06) saturate(1.10);
         }
-
-        /* On big screens, #loader-overlay (the shared parent spanning
-           both .poster and .brand-copy-section) carries this same
-           contrast/saturate grade once, for the whole combined area.
-           Without this override, .poster's own copy of the filter
-           STACKS on top of that, double-applying the grade and making
-           the poster's visible background read as a darker, greyer
-           tone than .brand-copy-section right next to it — which is
-           exactly the mismatch that was reported. Placed after the
-           base rule above so it wins the cascade. */
-        @media (min-width: 641px) {
-            .poster {
-                filter: none;
-            }
-        }
-
         /* Landscape phones: keep the globe big but clear of UI chrome */
         @media (max-height: 500px) {
             .globe-scene {
@@ -724,20 +423,8 @@
            that space — but ONLY on small screens. Desktop/large screens
            keep .brand-copy { display: none } from above, untouched. */
         @media (max-width: 640px) and (min-height: 560px) {
-            .brand-copy-section {
-                display: block;
-            }
-
             .brand-copy {
                 display: block;
-                position: fixed;      /* pinned to viewport bottom, over
-                                          the globe — .brand-copy is no
-                                          longer nested inside .poster,
-                                          so fixed (not absolute) keeps
-                                          the same visual result */
-                bottom: clamp(14px, 3vh, 40px);
-                left: 50%;
-                transform: translateX(-50%);
             }
 
             .brand-copy__eyebrow {
@@ -1247,15 +934,9 @@
 
             </div><!-- /.poster__content -->
 
-        </main>
-
-        <!-- Brand copy lives OUTSIDE .poster so that on big screens it
-             can sit in normal page flow below the globe and be reached
-             by scrolling. On small screens, CSS switches it to
-             position:fixed so it still reads as pinned over the bottom
-             of the globe, exactly as before — no DOM move needed per
-             breakpoint, just a positioning-strategy switch. -->
-        <section class="brand-copy-section">
+            <!-- Brand copy: hidden on desktop/large screens via CSS.
+                 Visible only on small screens where the globe leaves
+                 spare vertical space beneath it (see media query). -->
             <section class="brand-copy" aria-label="Brand information">
                 <div class="brand-copy__eyebrow">
                     <span class="typewriter" data-text="Ell B. Media" data-delay="2200">
@@ -1283,7 +964,9 @@
                 </div>
                 <div class="brand-copy__bar brand-copy__bar--animate"></div>
             </section>
-        </section>
+
+            
+        </main>
     </div>
 
     <!-- Location info modal — must be in DOM before the globe script runs -->
@@ -2006,14 +1689,8 @@
                 const sparkGeo = new THREE.BufferGeometry();
                 sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPositions, 3));
                 const sparkMat = new THREE.PointsMaterial({
-                    color: 0xe8b94a,     // richer, more saturated gold —
-                                         // the old pale 0xffe8a0 was being
-                                         // washed toward white/ash by ACES
-                                         // tone mapping at exposure 1.22
-                    size: 0.048, transparent: true, opacity: 1,
+                    color: 0xffe8a0, size: 0.048, transparent: true, opacity: 1,
                     sizeAttenuation: true,
-                    toneMapped: false,   // keep the gold true regardless of
-                                         // scene exposure/tone-mapping curve
                 });
                 tiltGroup.add(new THREE.Points(sparkGeo, sparkMat));
 
@@ -2190,29 +1867,6 @@
 
                 // Watch the scene container — it has the real layout size
                 new ResizeObserver(syncSize).observe(sceneEl || globeEl);
-
-                // ── Iframe-embed resilience ────────────────────────────
-                // Inside an iframe, some mobile WebViews / older embeds
-                // don't reliably fire ResizeObserver when the parent page
-                // resizes the iframe itself (as opposed to content inside
-                // it). These extra listeners catch that case.
-                window.addEventListener('resize', syncSize);
-                window.addEventListener('orientationchange', () => {
-                    syncSize();
-                    setTimeout(syncSize, 200);   // after orientation settles
-                    setTimeout(syncSize, 600);
-                });
-                // Cheap safety poll: catches iframe resizes some browsers
-                // never tell us about via events at all. Low cost since
-                // syncSize() is a no-op when size hasn't actually changed.
-                let _lastW = 0, _lastH = 0;
-                setInterval(() => {
-                    const s = getSize();
-                    if (s.w !== _lastW || s.h !== _lastH) {
-                        _lastW = s.w; _lastH = s.h;
-                        syncSize();
-                    }
-                }, 500);
 
                 // Expose for the intro-ready handler to call
                 window.__globeSyncSize = syncSize;
