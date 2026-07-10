@@ -45,10 +45,6 @@
             min-height: 100vh;  /* fallback when html/body aren't given an
                                     explicit height by something upstream
                                     (e.g. opened directly, not embedded) */
-            min-height: calc(var(--real-vh, 1vh) * 100); /* JS-measured real
-                                    pixel height, once available — most
-                                    reliable of all three, used last so it
-                                    wins the cascade */
             overflow-x: hidden; /* never allow horizontal scroll/offset */
         }
 
@@ -195,7 +191,6 @@
                 height: auto;
                 min-height: 100dvh;
                 min-height: 100vh;
-                min-height: calc(var(--real-vh, 1vh) * 100);
             }
 
             body {
@@ -206,8 +201,6 @@
                 flex: 0 0 100vh;       /* poster keeps its full-viewport
                                            hero look, unaffected */
                 flex: 0 0 100dvh;
-                flex-basis: calc(var(--real-vh, 1vh) * 100); /* JS-measured
-                                           real pixel height, once available */
                 min-height: 480px;
                 /* The shared cream background now lives on #loader-overlay
                    (below), spanning the full scrollable height. Poster
@@ -1406,27 +1399,6 @@
 
 
     
-    <script>
-        // Embed-safety: measure the ACTUAL rendered height of this document's
-        // own viewport (which, when embedded via an iframe on platforms like
-        // Wix, is the iframe's box) and expose it as a pixel-based custom
-        // property. CSS below prefers this over a raw `vh` unit. If this
-        // script hasn't run yet (or is somehow blocked), every usage falls
-        // back to the original 100vh/100dvh behavior automatically -- so
-        // this can only add robustness, never regress the existing layout.
-        (function () {
-            function setRealVH() {
-                var h = window.innerHeight || document.documentElement.clientHeight || 0;
-                if (h > 0) {
-                    document.documentElement.style.setProperty('--real-vh', (h * 0.01) + 'px');
-                }
-            }
-            setRealVH();
-            window.addEventListener('resize', setRealVH);
-            window.addEventListener('orientationchange', setRealVH);
-        })();
-    </script>
-
     <script>
         // for globe
         /**
